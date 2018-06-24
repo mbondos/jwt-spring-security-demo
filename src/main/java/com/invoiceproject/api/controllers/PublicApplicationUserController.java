@@ -1,6 +1,7 @@
 package com.invoiceproject.api.controllers;
 
 
+import com.invoiceproject.api.dtos.UsernameAndPasswordDto;
 import com.invoiceproject.api.model.ApplicationUser;
 import com.invoiceproject.api.services.ApplicationUserService;
 import com.invoiceproject.api.services.UserAuthenticationService;
@@ -8,10 +9,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static lombok.AccessLevel.PRIVATE;
 
@@ -26,21 +24,18 @@ public class PublicApplicationUserController {
     ApplicationUserService applicationUserService;
 
     @PostMapping("/register")
-    String register(
-            @RequestParam("username") final String username,
-            @RequestParam("password") final String password) {
-        //TODO refactor to DTO
+    String register(@RequestBody UsernameAndPasswordDto usernameAndPasswordDto) {
         applicationUserService.save(ApplicationUser.builder()
-                .username(username)
-                .password(password)
+                .username(usernameAndPasswordDto.getUsername())
+                .password(usernameAndPasswordDto.getPassword())
                 .build());
-        return login(username, password);
+        return login(usernameAndPasswordDto);
     }
 
     @PostMapping("/login")
-    String login(String username, String password) {
+    String login(@RequestBody UsernameAndPasswordDto usernameAndPasswordDto) {
         return authenticationService
-                .login(username, password)
+                .login(usernameAndPasswordDto.getUsername(), usernameAndPasswordDto.getPassword())
                 .orElseThrow(() -> new RuntimeException("Invalid login and/or password"));
     }
 }
