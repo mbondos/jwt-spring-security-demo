@@ -9,4 +9,5 @@ public class InvoiceProjectApiApplication {
     public static void main(String[] args) {
         SpringApplication.run(InvoiceProjectApiApplication.class, args);
     }
+
 }
